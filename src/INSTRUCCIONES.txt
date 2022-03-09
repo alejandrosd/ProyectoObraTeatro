@@ -1,0 +1,49 @@
+Buen dia profe,
+
+Para ejecutar el programa debe correr el siguiente Script de 
+oracle con las credenciales de usuario01 y clave01, una vez 
+corra el script debe correr el archivo "App.py" y escribir en 
+su explorador de preferencia "localhost:3000" y ya podra 
+utilizar el programa.
+
+Script de Oracle:
+
+create table documento (
+idTipoDocumento number(38,0) not null,
+nombreTipoDocumento varchar(40) not null,
+CONSTRAINT pk_tipoDocumento
+PRIMARY KEY (idTipoDocumento)
+);
+
+create table carrera (
+idCarrera number(38,0) not null,
+nombreCarrera varchar(40) not null,
+CONSTRAINT pk_carrera
+PRIMARY KEY (idCarrera)
+);
+
+INSERT INTO documento VALUES('1', 'Cedula de Ciudadania');
+INSERT INTO documento VALUES('2', 'Tarjeta de Identidad');
+
+INSERT INTO carrera VALUES('20', 'Ingenieria de Sistemas');
+INSERT INTO carrera VALUES('15', 'Ingenieria Industrial');
+
+create table estudiante (
+codigo number(15,0) not null,
+nombre varchar(30) not null,
+apellido varchar(30) not null,
+idTipoDocumento number(38,0) not null,
+numeroDocumento number (15,0) not null,
+idCarrera number(38,0) not null,
+correo varchar(40) not null,
+CONSTRAINT pk_codigo_estudiante
+PRIMARY KEY (codigo),
+CONSTRAINT fk_idCarrera
+FOREIGN KEY (idCarrera)
+REFERENCES carrera (idCarrera),
+CONSTRAINT fk_idTipoDocumento
+FOREIGN KEY (idTipoDocumento)
+REFERENCES documento (idTipoDocumento)
+);
+
+commit;
