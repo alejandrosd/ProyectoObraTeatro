@@ -58,23 +58,34 @@ def index():
     print("tamanio ", size(data))
     return render_template('index.html', estudiantes = data, carreras = data2, tiposdocumentos = data3)
 
-def enviar_correo(nombre, codigo, correo, horas, minutos):
-    print("MINUTOS ",minutos)
-    if minutos < 10:
-        minutos = "0"+str(minutos)
-    horario=str(int(horas))+":"+str(minutos)
-    print(horario)
-    hoy = datetime.date.today()
 
-    fecha_cita = hoy + datetime.timedelta(1)
-    mensaje = ('Buen dia, se le informa al estudiante '+nombre+' de codigo '+codigo+' que su cita para la audicion esta agendada para la fecha '+ fecha_cita.strftime('%d/%m/%Y') +' a las '+horario)
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login('correo.base.de.datos.uno@gmail.com', 'basededatos')  
-    msg = 'Subject: {}\n\n{}'.format("Obra de teatro", mensaje)  
-    server.sendmail('correo.base.de.datos.uno@gmail.com', correo, msg) 
-    server.quit()
+@app.route('/inicio')
+def inicio():
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM estudiante")
+    data = cursor.fetchall()
+    data2 = fecha()
+    return render_template('layout.html', obras = data, fechas = data2)
 
+@app.route('/asistencia')
+def asistencia():
+    print("test")
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM estudiante")
+    data = cursor.fetchall()
+    print("data ", (data))
+    data2 = fecha()
+    print("data2 ",(data2))
+    return render_template('asistencia.html', obras = data, fechas = data2)
+
+def fecha():
+    ahora = datetime.datetime.now()
+    ahora = ahora.strftime('%d/%m/%Y')
+    print(type(ahora))
+    arreglo=[]
+    arreglo.append((ahora,"hoy"))
+    print(arreglo)
+    return arreglo
 
 @app.route('/add_contact', methods=['POST'])
 def add_contact():
@@ -151,5 +162,22 @@ def delete_contact(id):
     flash('Usuario removido')
     return redirect(url_for('index'))
 
+
+def enviar_correo(nombre, codigo, correo, horas, minutos):
+    print("MINUTOS ",minutos)
+    if minutos < 10:
+        minutos = "0"+str(minutos)
+    horario=str(int(horas))+":"+str(minutos)
+    print(horario)
+    hoy = datetime.date.today()
+
+    fecha_cita = hoy + datetime.timedelta(1)
+    mensaje = ('Buen dia, se le informa al estudiante '+nombre+' de codigo '+codigo+' que su cita para la audicion esta agendada para la fecha '+ fecha_cita.strftime('%d/%m/%Y') +' a las '+horario)
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login('correo.base.de.datos.uno@gmail.com', 'basededatos')  
+    msg = 'Subject: {}\n\n{}'.format("Obra de teatro", mensaje)  
+    server.sendmail('correo.base.de.datos.uno@gmail.com', correo, msg) 
+    server.quit()
 if __name__=='__main__':
     app.run(port = 3000, debug = True)

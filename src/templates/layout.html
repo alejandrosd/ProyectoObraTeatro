@@ -11,7 +11,15 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-          <a class="navbar-brand" href="/">Obra de Teatro</a>
+          {% for obra in obras %}
+                   <a class="navbar-brand" href="/">Obra Activa: {{ obra.1 }}   </a>
+          {% endfor %}
+          <a class="navbar-brand" href="/"> Docente: </a>
+            
+
+          {% for fecha in fechas %}
+          <a class="navbar-brand" href="/"> Fecha Actual:  {{ fecha.0 }} </a>
+          {% endfor %}
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
