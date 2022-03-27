@@ -62,21 +62,38 @@ def index():
 @app.route('/inicio')
 def inicio():
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM estudiante")
+    cursor.execute("SELECT titulo FROM obra WHERE estado like 1")
+    #cursor.execute("SELECT * FROM obra")
     data = cursor.fetchall()
+    print("OBRA: ", data)
     data2 = fecha()
     return render_template('layout.html', obras = data, fechas = data2)
 
 @app.route('/asistencia')
 def asistencia():
-    print("test")
     cursor = connection.cursor()
-    cursor.execute("SELECT * FROM estudiante")
+    # Datos para layout.html
+    cursor.execute("SELECT titulo FROM obra WHERE estado like 1")
     data = cursor.fetchall()
-    print("data ", (data))
+    
+    print("OBRA: ", data)
     data2 = fecha()
-    print("data2 ",(data2))
-    return render_template('asistencia.html', obras = data, fechas = data2)
+
+    #Datos para asistencia.html
+    cursor.execute("""SELECT E.idestudiante, E.idunidad, TO_CHAR(E.fechainscripcion, 'DD/MM/YYYY') insc, TO_CHAR(E.fechanacimiento, 'DD/MM/YYYY') nac, E.correo, E.nombre, E.apellido, O.titulo 
+                      FROM estudiante E, PersonajeEstudiante PE, personaje P, obra O
+                      WHERE E.idestudiante = PE.idestudiante and
+                            P.idpersonaje = PE.idpersonaje and
+                            P.idobra = PE.idobra and
+                            O.idobra = PE.idobra and
+                            (PE.idobra) = (SELECT idobra 
+                                           FROM obra
+                                           WHERE estado like 1)""")
+    data3 = cursor.fetchall()
+    print("ESTUDIANTES: ",len(data3))
+    print(data3)
+
+    return render_template('asistencia.html', obras = data, fechas = data2,  estudiantes = data3 )
 
 def fecha():
     ahora = datetime.datetime.now()

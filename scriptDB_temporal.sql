@@ -56,32 +56,32 @@ INSERT INTO TipoObra VALUES(
 -- Obra
 	
 INSERT INTO Obra VALUES (
-    '1', 'Hamlet', '1', '01/01/1602', '2', '1', 0 
+    '1', 'Hamlet', '1', TO_DATE('01/01/1602', 'DD/MM/YYYY'), '2', '1', '0' 
 );
 
 
 INSERT INTO Obra VALUES (
-    '2', 'La Divina Comedia', '2', '03/11/2008', '3', '2', 1 
+    '2', 'La Divina Comedia', '2', TO_DATE('03/11/2008', 'DD/MM/YYYY'), '3', '2', '1' 
 );
 
 INSERT INTO Obra VALUES (
-    '3', 'El sueno de noche de verano ', '1', '1/11/1600', '2', '1', 0 
+    '3', 'El sueno de noche de verano ', '1', TO_DATE('1/11/1600', 'DD/MM/YYYY'), '2', '1', '0' 
 );
 
 INSERT INTO Obra VALUES (
-    '4', 'Romeo y Julieta', '1', '5/3/1602', '2', '1', 0 
+    '4', 'Romeo y Julieta', '1', TO_DATE('5/3/1602', 'DD/MM/YYYY'), '2', '1', '0' 
 );
 
 INSERT INTO Obra VALUES (
-    '5', ' El Fantasma de la Ópera', '3', '10/3/2004', '2', '3', 0 
+    '5', ' El Fantasma de la Ópera', '3', TO_DATE('10/3/2004', 'DD/MM/YYYY'), '2', '3', '0' 
 );
 
 INSERT INTO Obra VALUES (
-    '6', 'La celestina', '4', '1/1/1499', '5', '1', 0 
+    '6', 'La celestina', '4', TO_DATE('1/1/1499', 'DD/MM/YYYY'), '5', '1', '0' 
 );
 
 INSERT INTO Obra VALUES (
-    '7', 'Don Juan Tenorio', '5', '1/1/1844', '5', '1', 0 
+    '7', 'Don Juan Tenorio', '5', TO_DATE('1/1/1844', 'DD/MM/YYYY'), '5', '1', '0 '
 );
 
 -- Personajes
@@ -430,45 +430,45 @@ INSERT INTO Estudiante VALUES (
 --obra activa (La Divina Comedia)
 
 INSERT INTO PersonajeEstudiante VALUES (
-    '1', '5', '2', '2011202112', TO_DATE('14/05/2022 08:00', 'DD-MM-YY HH24:MI:SS'), TO_DATE('14/05/2022 16:00', 'DD-MM-YY HH24:MI:SS')
-);
+    '1', '5', '2', '2011202112', TO_DATE('14/05/2022 08:00', 'DD-MM-YY HH24:MI'), TO_DATE('14/05/2022 16:00', 'DD-MM-YY HH24:MI')
+); -- Perez
 
 INSERT INTO PersonajeEstudiante VALUES (
-    '2', '6', '2', '2016102051', TO_DATE('14/05/2022 08:00', 'DD-MM-YY HH24:MI:SS'), TO_DATE('14/05/2022 16:00', 'DD-MM-YY HH24:MI:SS')
-);
+    '2', '6', '2', '2016102051', TO_DATE('14/05/2022 08:00', 'DD-MM-YY HH24:MI'), TO_DATE('14/05/2022 16:00', 'DD-MM-YY HH24:MI')
+); -- Quintero
 
 INSERT INTO PersonajeEstudiante VALUES (
-    '3', '7', '2', '2019102017', TO_DATE('14/05/2022 08:00', 'DD-MM-YY HH24:MI:SS'), TO_DATE('14/05/2022 16:00', 'DD-MM-YY HH24:MI:SS')
-);
+    '3', '7', '2', '2019102017', TO_DATE('14/05/2022 08:00', 'DD-MM-YY HH24:MI'), TO_DATE('14/05/2022 16:00', 'DD-MM-YY HH24:MI')
+); -- Duarte
 
 INSERT INTO PersonajeEstudiante VALUES (
-    '4', '8', '2', '2020202062', TO_DATE('14/05/2022 08:00', 'DD-MM-YY HH24:MI:SS'), TO_DATE('14/05/2022 16:00', 'DD-MM-YY HH24:MI:SS')
-);
+    '4', '8', '2', '2020202062', TO_DATE('14/05/2022 08:00', 'DD-MM-YY HH24:MI'), TO_DATE('14/05/2022 16:00', 'DD-MM-YY HH24:MI')
+); -- Fernandez
 
 --obras inactivas
 
 INSERT INTO PersonajeEstudiante VALUES (
-    '5', '1', '1', '2015202002', TO_DATE('14/07/2022 08:00', 'DD-MM-YY HH24:MI:SS'), TO_DATE('14/07/2022 16:00', 'DD-MM-YY HH24:MI:SS')
+    '5', '1', '1', '2015202002', TO_DATE('14/07/2022 08:00', 'DD-MM-YY HH24:MI'), TO_DATE('14/07/2022 16:00', 'DD-MM-YY HH24:MI')
 );
 
 INSERT INTO PersonajeEstudiante VALUES (
-    '6', '2', '1', '2017102021', TO_DATE('14/07/2022 08:00', 'DD-MM-YY HH24:MI:SS'), TO_DATE('14/07/2022 16:00', 'DD-MM-YY HH24:MI:SS')
+    '6', '2', '1', '2017102021', TO_DATE('14/07/2022 08:00', 'DD-MM-YY HH24:MI'), TO_DATE('14/07/2022 16:00', 'DD-MM-YY HH24:MI')
 );
 
 INSERT INTO PersonajeEstudiante VALUES (
-    '7', '9', '3', '2019202044', TO_DATE('14/09/2022 08:00', 'DD-MM-YY HH24:MI:SS'), TO_DATE('14/09/2022 16:00', 'DD-MM-YY HH24:MI:SS')
+    '7', '9', '3', '2019202044', TO_DATE('14/09/2022 08:00', 'DD-MM-YY HH24:MI'), TO_DATE('14/09/2022 16:00', 'DD-MM-YY HH24:MI')
 );
 
 INSERT INTO PersonajeEstudiante VALUES (
-    '8', '14', '4', '2019102072', TO_DATE('14/11/2022 08:00', 'DD-MM-YY HH24:MI:SS'), TO_DATE('14/11/2022 16:00', 'DD-MM-YY HH24:MI:SS')
+    '8', '14', '4', '2019102072', TO_DATE('14/11/2022 08:00', 'DD-MM-YY HH24:MI'), TO_DATE('14/11/2022 16:00', 'DD-MM-YY HH24:MI')
 );
 
 INSERT INTO PersonajeEstudiante VALUES (
-    '9', '13', '4', '2017202024', TO_DATE('14/05/2022 08:00', 'DD-MM-YY HH24:MI:SS'), TO_DATE('14/05/2022 16:00', 'DD-MM-YY HH24:MI:SS')
+    '9', '13', '4', '2017202024', TO_DATE('14/05/2022 08:00', 'DD-MM-YY HH24:MI'), TO_DATE('14/05/2022 16:00', 'DD-MM-YY HH24:MI')
 );
 
 INSERT INTO PersonajeEstudiante VALUES (
-    '10', '15', '4', '2017202012', TO_DATE('14/05/2022 08:00', 'DD-MM-YY HH24:MI:SS'), TO_DATE('14/05/2022 16:00', 'DD-MM-YY HH24:MI:SS')
+    '10', '15', '4', '2017202012', TO_DATE('14/05/2022 08:00', 'DD-MM-YY HH24:MI'), TO_DATE('14/05/2022 16:00', 'DD-MM-YY HH24:MI')
 );
 
 
@@ -544,52 +544,52 @@ INSERT INTO Rol VALUES (
   --  ObraActiva
 
 INSERT INTO PersonalObra VALUES (
-    '1', '1', '1', '1', '2', '14/05/2022', '14/06/2022'
+    '1', '1', '1', '1', '2', TO_DATE('14/05/2022', 'DD-MM-YY'), TO_DATE('14/05/2022', 'DD-MM-YY')
 );
 
 INSERT INTO PersonalObra VALUES (
-    '2', '2', '1', '1', '2', '14/05/2022', '14/06/2022'
+    '2', '2', '1', '1', '2', TO_DATE('14/05/2022', 'DD-MM-YY'), TO_DATE('14/06/2022', 'DD-MM-YY')
 );
 
 INSERT INTO PersonalObra VALUES (
-    '3', '3', '1', '2', '2', '14/05/2022', '14/06/2022'
+    '3', '3', '1', '2', '2', TO_DATE('14/05/2022', 'DD-MM-YY'), TO_DATE('14/06/2022', 'DD-MM-YY')
 );
 
 INSERT INTO PersonalObra VALUES (
-    '4', '4', '1', '2', '2', '14/05/2022', '14/06/2022'
+    '4', '4', '1', '2', '2', TO_DATE('14/05/2022', 'DD-MM-YY'), TO_DATE('14/06/2022', 'DD-MM-YY')
 );
 
 INSERT INTO PersonalObra VALUES (
-    '5', '5', '1', '2', '2', '14/05/2022', '14/06/2022'
+    '5', '5', '1', '2', '2', TO_DATE('14/05/2022', 'DD-MM-YY'), TO_DATE('14/06/2022', 'DD-MM-YY')
 );
 
 INSERT INTO PersonalObra VALUES (
-    '6', '6', '1', '2', '2', '14/05/2022', '14/06/2022'
+    '6', '6', '1', '2', '2', TO_DATE('14/05/2022', 'DD-MM-YY'), TO_DATE('14/06/2022', 'DD-MM-YY')
 );
 
 INSERT INTO PersonalObra VALUES (
-    '7', '7', '1', '2', '2', '14/05/2022', '14/06/2022'
+    '7', '7', '1', '2', '2', TO_DATE('14/05/2022', 'DD-MM-YY'), TO_DATE('14/06/2022', 'DD-MM-YY')
 );
 
     
   --  Obras Inactivas
 
 INSERT INTO PersonalObra VALUES (
-    '8', '8', '1', '1', '1', '14/05/2022', '14/06/2022'
+    '8', '8', '1', '1', '1', TO_DATE('14/06/2022', 'DD-MM-YY'), TO_DATE('14/07/2022', 'DD-MM-YY')
 );
 
 INSERT INTO PersonalObra VALUES (
-    '9', '9', '1', '1', '4', '14/05/2022', '14/06/2022'
+    '9', '9', '1', '1', '4', TO_DATE('14/07/2022', 'DD-MM-YY'), TO_DATE('14/08/2022', 'DD-MM-YY')
 );
 
 INSERT INTO PersonalObra VALUES (
-    '10', '10', '1', '2', '1', '14/05/2022', '14/06/2022'
+    '10', '10', '1', '2', '1', TO_DATE('14/06/2022', 'DD-MM-YY'), TO_DATE('14/07/2022', 'DD-MM-YY')
 );
 
 INSERT INTO PersonalObra VALUES (
-    '11', '11', '1', '2', '1', '14/05/2022', '14/06/2022'
+    '11', '11', '1', '2', '1', TO_DATE('14/06/2022', 'DD-MM-YY'), TO_DATE('14/07/2022', 'DD-MM-YY')
 );
 
 INSERT INTO PersonalObra VALUES (
-    '12', '12', '1', '2', '4', '14/05/2022', '14/06/2022'
+    '12', '12', '1', '2', '4', TO_DATE('14/07/2022', 'DD-MM-YY'), TO_DATE('14/08/2022', 'DD-MM-YY')
 );

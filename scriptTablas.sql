@@ -452,7 +452,7 @@ create table OBRA
    FECHAOBRA            DATE                 not null,
    CODPAIS              VARCHAR2(4)          not null,
    IDTIPOOBRA           VARCHAR2(4)          not null,
-   ESTADO               SMALLINT             not null,
+   ESTADO               number(5)             not null,
    constraint PK_OBRA primary key (IDOBRA)
 );
 
