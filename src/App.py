@@ -73,6 +73,134 @@ def inicio():
 def asistencia():
     cursor = connection.cursor()
     # Datos para layout.html
+    #titulo de la obra activa (estado=1)
+    cursor.execute("SELECT titulo FROM obra WHERE estado like 1")
+    data = cursor.fetchall()
+    
+    #fecha actual
+    #print("OBRA: ", data)
+    data2 = fecha()
+
+    #Datos para asistencia.html
+    #datos de todos los estudiantes que pertenecen a la obra activa (O.estado = 1)
+    cursor.execute("""SELECT E.idestudiante, E.idunidad, TO_CHAR(E.fechainscripcion, 'DD/MM/YYYY') insc, TO_CHAR(E.fechanacimiento, 'DD/MM/YYYY') nac, E.correo, E.nombre, E.apellido, O.titulo 
+                      FROM estudiante E, PersonajeEstudiante PE, personaje P, obra O
+                      WHERE E.idestudiante = PE.idestudiante and
+                            P.idpersonaje = PE.idpersonaje and
+                            P.idobra = PE.idobra and
+                            O.idobra = PE.idobra and
+                            (PE.idobra) = (SELECT idobra 
+                                           FROM obra
+                                           WHERE estado like 1)""")
+    data3 = cursor.fetchall()
+    #print("ESTUDIANTES: ",len(data3))
+    #print(data3)
+
+    return render_template('asistencia.html', obras = data, fechas = data2,  estudiantes = data3 )
+
+def fecha():
+    ahora = datetime.datetime.now()
+    ahora = ahora.strftime('%d/%m/%Y')
+    arreglo=[]
+
+    #Fecha real para HOY
+    #arreglo.append((ahora,"hoy"))
+    
+    #Fecha de pruebas 
+    arreglo.append(('31/03/2022', 'prueba'))
+    return arreglo
+
+@app.route('/asist/<string:id>')
+def asistencia_estudiante(id):
+    idestudiante = id
+    #print("condigo est ",id)
+    cursor= connection.cursor()
+
+    #Numero deregistros en tabla asistenciaEstudiante para definir su llave primaria
+    cursor.execute('SELECT * FROM asistenciaEstudiante')
+    data = cursor.fetchall()
+    print("registros: ", len(data))
+    idasistencia = len(data) + 1
+
+    #Obtener el idcalendario con la fecha actual en una consulta anidada con la tabla horafecha 
+    fecha_actual = fecha()[0][0]
+    print("fecha actualllll: ",fecha_actual)
+
+    cursor.execute("""SELECT C.idcalendario 
+                      FROM calendario C, horafecha HF, horafecha HF2
+                      WHERE HF.idhorafecha = C.idhorainicio and
+                      HF2.idhorafecha = C.idhorafin and
+                      HF.idhorafecha in (SELECT idhorafecha 
+                                         FROM horafecha 
+                                         WHERE TO_CHAR(fecha, 'DD/MM/YYYY') like :fecha_actual)""",{'fecha_actual':fecha_actual})
+        #cursor.execute('DELETE FROM usuario WHERE id = {0}.format(id))
+    data2 = cursor.fetchall()
+    print("idcalendario: ", data2)
+    idcalendario = data2[0][0]
+
+    #Obtener el idObra con el idestudiante
+    print(idestudiante)
+    cursor.execute("""SELECT PE.idobra
+                      FROM estudiante E, PersonajeEstudiante PE
+                      WHERE E.idestudiante = PE.idestudiante and
+                            E.idestudiante like :codigo""", {'codigo':idestudiante})
+    data3 = cursor.fetchall()
+    print("IDE OBRA: ",data3)
+    idobra = data3[0][0]
+    #registro de asistencia del estudiante 
+
+    try:
+        cursor= connection.cursor()
+        #cursor.execute("""DELETE FROM asistenciaestudiante""")
+        
+        cursor.execute("""SELECT * FROM asistenciaEstudiante""")
+        consulta = cursor.fetchall()
+        print(len(consulta))
+        print(consulta)
+
+        #consulta para verificar la existencia de un idcalendario y un idestudiante en la tabla de asistencia, 
+        #para evitar registros repetidos 
+        cursor.execute("""SELECT idcalendario
+                          FROM AsistenciaEstudiante
+                          WHERE idestudiante like :codigo""", {'codigo':idestudiante})
+        comprobacion = cursor.fetchall()
+        print("comprobacion ",comprobacion)
+        print("idcalendario", idcalendario)
+        
+        if(len(comprobacion) == 0):
+            cursor.execute('INSERT INTO asistenciaEstudiante (idAsistenciaEstudiante, idCalendario, idObra, idEstudiante) VALUES (:idAsistenciaEstudiante, :idCalendario, :idObra, :idEstudiante)', 
+            (idasistencia, idcalendario, idobra, idestudiante))
+        
+            print("ASISTENCIA AGREGADA")
+            connection.commit()
+            flash('Asistencia guardada para el estudiante de codigo '+idestudiante)
+        else:
+            if(comprobacion[0][0] == idcalendario):
+                print("YA EXISTE")
+                flash('El estudiante de codigo '+idestudiante+' ya ha sido registrado el dia de hoy')
+            else:
+                cursor.execute('INSERT INTO asistenciaEstudiante (idAsistenciaEstudiante, idCalendario, idObra, idEstudiante) VALUES (:idAsistenciaEstudiante, :idCalendario, :idObra, :idEstudiante)', 
+                (idasistencia, idcalendario, idobra, idestudiante))
+                print("ASISTENCIA AGREGADA")
+                connection.commit() 
+                flash('Asistencia guardada para el estudiante de codigo '+idestudiante)
+        
+    except cx_Oracle.Error as error:
+        flash('ERROR')
+        print(error)
+
+    #flash('Usuario removido')
+    
+    
+
+    #connection.commit()
+
+    return redirect(url_for('asistencia'))
+
+@app.route('/viaticos')
+def viaticos():
+    cursor = connection.cursor()
+    # Datos para layout.html
     cursor.execute("SELECT titulo FROM obra WHERE estado like 1")
     data = cursor.fetchall()
     
@@ -92,17 +220,7 @@ def asistencia():
     data3 = cursor.fetchall()
     print("ESTUDIANTES: ",len(data3))
     print(data3)
-
-    return render_template('asistencia.html', obras = data, fechas = data2,  estudiantes = data3 )
-
-def fecha():
-    ahora = datetime.datetime.now()
-    ahora = ahora.strftime('%d/%m/%Y')
-    print(type(ahora))
-    arreglo=[]
-    arreglo.append((ahora,"hoy"))
-    print(arreglo)
-    return arreglo
+    return render_template('viaticos.html', obras = data, fechas = data2,  estudiantes = data3 )
 
 @app.route('/add_contact', methods=['POST'])
 def add_contact():
@@ -154,6 +272,7 @@ def get_contact(id):
     id = id+" "
     cursor.execute('SELECT * FROM estudiante WHERE codigo = :codigo',{'codigo':id})
     data = cursor.fetchall()
+
     return render_template('edit-contact.html', estudiante = data[0])
 
 @app.route('/update/<id>', methods= ['POST'])
@@ -169,6 +288,9 @@ def update_contact(id):
         connection.commit()
         flash('Contacto actualizado')
     return redirect(url_for('index'))
+
+
+
 
 @app.route('/delete/<string:id>')
 def delete_contact(id):

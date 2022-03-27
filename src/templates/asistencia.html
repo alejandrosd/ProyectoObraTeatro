@@ -6,6 +6,18 @@
         <p>Asistencia</p>
 
         <div class="col-md-7">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            {% for message in messages %}
+            
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
             <table class="table table-striped table-bordered bg-white table-sm">
                 <thead>
                     <tr>
@@ -31,7 +43,7 @@
                         <td>{{ estudiante.6 }} </td>
                         <td>{{ estudiante.7 }} </td>
                         <td>
-                            <a href="/edit/{{estudiante.0}}" class="btn btn-secondary">Asistencia</a>
+                            <a href="/asist/{{estudiante.0}}" class="btn btn-secondary">Asistencia</a>
                             <a href="/delete/{{estudiante.0}}" class="btn btn-secondary">Eliminar</a>
                         </td>
                     </tr>
