@@ -593,3 +593,46 @@ INSERT INTO PersonalObra VALUES (
 INSERT INTO PersonalObra VALUES (
     '12', '12', '1', '2', '4', TO_DATE('14/07/2022', 'DD-MM-YY'), TO_DATE('14/08/2022', 'DD-MM-YY')
 );
+
+
+
+-- LaborPersonalObra
+
+INSERT INTO PersonalObra VALUES (
+    '1', '1', '1', '1', '2', TO_DATE('14/05/2022', 'DD-MM-YY'), TO_DATE('14/05/2022', 'DD-MM-YY')
+);
+
+INSERT INTO PersonalObra VALUES (
+    '2', '2', '1', '1', '2', TO_DATE('14/05/2022', 'DD-MM-YY'), TO_DATE('14/06/2022', 'DD-MM-YY')
+);
+
+INSERT INTO PersonalObra VALUES (
+    '8', '8', '1', '1', '1', TO_DATE('14/06/2022', 'DD-MM-YY'), TO_DATE('14/07/2022', 'DD-MM-YY')
+);
+
+INSERT INTO PersonalObra VALUES (
+    '9', '9', '1', '1', '4', TO_DATE('14/07/2022', 'DD-MM-YY'), TO_DATE('14/08/2022', 'DD-MM-YY')
+);
+
+
+-- Obra Activa
+
+INSERT INTO LaborPersonalObra VALUES (
+    '1', '1', '1', '1', '10', '1', '1', '2'
+);
+
+INSERT INTO LaborPersonalObra VALUES (
+    '2', '2', '2', '1', '7', '1', '1', '2'
+);
+
+
+
+--Obra inActiva
+
+INSERT INTO LaborPersonalObra VALUES (
+    '8', '8', '8', '1', '10', '1', '9', '1'
+);
+
+INSERT INTO LaborPersonalObra VALUES (
+    '9', '9', '9', '1', '10', '1', '10', '4'
+);

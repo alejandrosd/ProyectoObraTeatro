@@ -125,7 +125,6 @@ def asistencia_estudiante(id):
     #Obtener el idcalendario con la fecha actual en una consulta anidada con la tabla horafecha 
     fecha_actual = fecha()[0][0]
     print("fecha actualllll: ",fecha_actual)
-
     cursor.execute("""SELECT C.idcalendario 
                       FROM calendario C, horafecha HF, horafecha HF2
                       WHERE HF.idhorafecha = C.idhorainicio and
@@ -137,7 +136,8 @@ def asistencia_estudiante(id):
     data2 = cursor.fetchall()
     print("idcalendario: ", data2)
     idcalendario = data2[0][0]
-
+    print("inicio",data2[0][0])
+    print("fin",data2[0][1])
     #Obtener el idObra con el idestudiante
     print(idestudiante)
     cursor.execute("""SELECT PE.idobra
@@ -147,17 +147,15 @@ def asistencia_estudiante(id):
     data3 = cursor.fetchall()
     print("IDE OBRA: ",data3)
     idobra = data3[0][0]
-    #registro de asistencia del estudiante 
 
+    #registro de asistencia del estudiante 
     try:
         cursor= connection.cursor()
         #cursor.execute("""DELETE FROM asistenciaestudiante""")
-        
         cursor.execute("""SELECT * FROM asistenciaEstudiante""")
         consulta = cursor.fetchall()
         print(len(consulta))
         print(consulta)
-
         #consulta para verificar la existencia de un idcalendario y un idestudiante en la tabla de asistencia, 
         #para evitar registros repetidos 
         cursor.execute("""SELECT idcalendario
@@ -170,8 +168,6 @@ def asistencia_estudiante(id):
         if(len(comprobacion) == 0):
             cursor.execute('INSERT INTO asistenciaEstudiante (idAsistenciaEstudiante, idCalendario, idObra, idEstudiante) VALUES (:idAsistenciaEstudiante, :idCalendario, :idObra, :idEstudiante)', 
             (idasistencia, idcalendario, idobra, idestudiante))
-        
-            print("ASISTENCIA AGREGADA")
             connection.commit()
             flash('Asistencia guardada para el estudiante de codigo '+idestudiante)
         else:
@@ -181,20 +177,11 @@ def asistencia_estudiante(id):
             else:
                 cursor.execute('INSERT INTO asistenciaEstudiante (idAsistenciaEstudiante, idCalendario, idObra, idEstudiante) VALUES (:idAsistenciaEstudiante, :idCalendario, :idObra, :idEstudiante)', 
                 (idasistencia, idcalendario, idobra, idestudiante))
-                print("ASISTENCIA AGREGADA")
                 connection.commit() 
                 flash('Asistencia guardada para el estudiante de codigo '+idestudiante)
-        
     except cx_Oracle.Error as error:
         flash('ERROR')
         print(error)
-
-    #flash('Usuario removido')
-    
-    
-
-    #connection.commit()
-
     return redirect(url_for('asistencia'))
 
 @app.route('/viaticos')
@@ -208,19 +195,68 @@ def viaticos():
     data2 = fecha()
 
     #Datos para asistencia.html
-    cursor.execute("""SELECT E.idestudiante, E.idunidad, TO_CHAR(E.fechainscripcion, 'DD/MM/YYYY') insc, TO_CHAR(E.fechanacimiento, 'DD/MM/YYYY') nac, E.correo, E.nombre, E.apellido, O.titulo 
-                      FROM estudiante E, PersonajeEstudiante PE, personaje P, obra O
-                      WHERE E.idestudiante = PE.idestudiante and
+    cursor.execute("""SELECT E.idestudiante, E.nombre, E.apellido, E.correo, O.titulo, P.nombre personaje, (PE.horafin - PE.horainicio)*24 horas
+                      FROM estudiante E, unidad U, personaje P, PersonajeEstudiante PE, obra O
+                      WHERE U.idunidad = E.idunidad and
+                            E.idestudiante = PE.idestudiante and
                             P.idpersonaje = PE.idpersonaje and
-                            P.idobra = PE.idobra and
-                            O.idobra = PE.idobra and
+                            O.idobra =  P.idobra and
                             (PE.idobra) = (SELECT idobra 
                                            FROM obra
                                            WHERE estado like 1)""")
     data3 = cursor.fetchall()
-    print("ESTUDIANTES: ",len(data3))
-    print(data3)
+    print("ESTUDIANTES: VIATICOS ",len(data3))
+    #print(data3)
     return render_template('viaticos.html', obras = data, fechas = data2,  estudiantes = data3 )
+
+
+@app.route('/viaticos/<string:id>')
+def viaticos_estudiantes(id):
+    idestudiante = id
+
+    cursor= connection.cursor()
+    cursor.execute('SELECT * FROM asistenciaEstudiante')
+    data = cursor.fetchall()
+
+    return redirect(url_for('viaticos'))
+
+
+
+@app.route('/certificados')
+def certificados():
+    cursor = connection.cursor()
+    # Datos para layout.html
+    cursor.execute("SELECT titulo FROM obra WHERE estado like 1")
+    data = cursor.fetchall()
+    print("OBRA: ", data)
+
+    data2 = fecha()
+
+    #Datos para asistencia.html
+    cursor.execute("""SELECT TRIM(O.titulo), NVL2(PART.empleado,'Participó', 'No participó')
+                      FROM obra O, (SELECT O.titulo titulo, O.estado estado, LPO.idempleado empleado
+                                  FROM obra O, calendario C, LaborPersonalObra LPO
+                                  WHERE O.idobra = C.idobra and
+                                          C.idcalendario = LPO.idcalendario and
+                                          C.idobra = LPO.idobra and
+                                          LPO.idempleado like 1) PART
+                    WHERE O.titulo = PART.titulo(+)""")
+
+    data3 = cursor.fetchall()
+    print("DOCENTES ",len(data3))
+    #print(data3)
+    return render_template('certificados.html', obras = data, fechas = data2,  estudiantes = data3 )
+
+@app.route('/certificados/<string:id>')
+def certificados_estudiantes(id):
+    idestudiante = id
+
+    cursor= connection.cursor()
+    cursor.execute('SELECT * FROM ')
+    data = cursor.fetchall()
+
+    return redirect(url_for('certificados'))
+
 
 @app.route('/add_contact', methods=['POST'])
 def add_contact():

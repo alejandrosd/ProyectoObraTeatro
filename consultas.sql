@@ -5,6 +5,11 @@ SELECT titulo FROM obra WHERE estado = 1;
 alter session set nls_date_format = 'dd/MON/yyyy hh24:mi:ss'
 
 
+
+------------------------------------------------------------------------------------------
+-------------------------- MODULO ASISTENCIA ---------------------------------------------
+------------------------------------------------------------------------------------------
+
 -- Estudiantes que pertenecen a la obra activa
 
 SELECT  O.titulo, E.apellido estudiant, PE.idobra 
@@ -53,9 +58,33 @@ WHERE E.idestudiante = PE.idestudiante and
     FROM calendario C, horafecha HF, horafecha HF2
     WHERE HF.idhorafecha = C.idhorainicio and
           HF2.idhorafecha = C.idhorafin and
-          HF.idhorafecha in (SELECT idhorafecha 
+          HF.idhorafecha < (SELECT idhorafecha 
                              FROM horafecha 
-                             where TO_CHAR(fecha, 'DD/MM/YYYY') like '31/03/2022');
+                             where TO_CHAR(fecha, 'DD/MM/YYYY HH24:MM:SS') like '31/03/2022 10:40:00') and
+          HF2.idhorafecha < (SELECT idhorafecha 
+                             FROM horafecha 
+                             where TO_CHAR(fecha, 'DD/MM/YYYY HH24:MM:SS') like '31/03/2022 10:40:00')
+
+    
+    -- select para traer calendario de la obra activa PARA ASISTENCI
+    SELECT O.titulo, C.*
+    FROM calendario C, horafecha HF, horafecha HF2, obra O
+    WHERE HF.idhorafecha = C.idhorainicio and
+          HF2.idhorafecha = C.idhorafin and
+          O.idobra = C.idobra and
+          O.idobra = '2' and
+          HF.fecha < TO_DATE('31/03/2022 08:40:00','DD/MM/YYYY HH24:MI:SS')  and
+          HF2.fecha > TO_DATE('31/03/2022 08:40:00','DD/MM/YYYY HH24:MI:SS') ;
+
+-- PARA INICIO
+SELECT O.titulo, C.*
+    FROM calendario C, horafecha HF, horafecha HF2, obra O
+    WHERE HF.idhorafecha = C.idhorainicio and
+          HF2.idhorafecha = C.idhorafin and
+          O.idobra = C.idobra and
+          O.idobra = '2' and
+          HF.fecha < TO_DATE('31/03/2022 08:40:00','DD/MM/YYYY HH24:MI:SS')  and
+          HF2.fecha > TO_DATE('31/03/2022 08:40:00','DD/MM/YYYY HH24:MI:SS') ;
 
 
     -- obtener idobra con idestudiante
@@ -83,3 +112,43 @@ INSERT INTO AsistenciaEstudiante VALUES (
     SELECT idcalendario
     FROM AsistenciaEstudiante
     WHERE idestudiante = 2011202112;
+
+
+------------------------------------------------------------------------------------------
+---------------------------- MODULO VIATICOS ---------------------------------------------
+------------------------------------------------------------------------------------------
+
+-- Visualizar la lista de estudiantes con las secciones (personajes) y horas que participaron en la obra activa
+SELECT E.idestudiante, E.nombre, E.apellido, E.correo, O.titulo, P.nombre personaje, (PE.horafin - PE.horainicio)*24 horas
+FROM estudiante E, unidad U, personaje P, PersonajeEstudiante PE, obra O
+WHERE U.idunidad = E.idunidad and
+      E.idestudiante = PE.idestudiante and
+      P.idpersonaje = PE.idpersonaje and
+      O.idobra =  P.idobra and
+      (PE.idobra) = (SELECT idobra 
+                     FROM obra
+                     WHERE estado like 1);
+
+
+
+------------------------------------------------------------------------------------------
+---------------------------- MODULO CERTIFICADOS ---------------------------------------------
+------------------------------------------------------------------------------------------
+
+-- todas las obras y en cuales participo como docente
+SELECT O.titulo titulo, O.estado estado, LPO.idempleado empleado
+FROM obra O, calendario C, LaborPersonalObra LPO
+WHERE O.idobra = C.idobra and
+      C.idcalendario = LPO.idcalendario and
+      C.idobra = LPO.idobra and
+      LPO.idempleado like 1;
+
+
+SELECT TRIM(O.titulo), NVL2(PART.empleado,'Participó', 'No participó') "Participacion como docente"
+FROM obra O, (SELECT O.titulo titulo, O.estado estado, LPO.idempleado empleado
+             FROM obra O, calendario C, LaborPersonalObra LPO
+             WHERE O.idobra = C.idobra and
+                   C.idcalendario = LPO.idcalendario and
+                   C.idobra = LPO.idobra and
+                   LPO.idempleado like 1) PART
+WHERE O.titulo = PART.titulo(+);
