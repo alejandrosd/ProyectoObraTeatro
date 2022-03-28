@@ -67,14 +67,14 @@ WHERE E.idestudiante = PE.idestudiante and
 
     
     -- select para traer calendario de la obra activa PARA ASISTENCI
-    SELECT O.titulo, C.*
-    FROM calendario C, horafecha HF, horafecha HF2, obra O
+    SELECT O.titulo, C.*, T.idobra
+    FROM calendario C, horafecha HF, horafecha HF2, obra O, (SELECT idobra FROM obra WHERE estado = 1) T
     WHERE HF.idhorafecha = C.idhorainicio and
           HF2.idhorafecha = C.idhorafin and
           O.idobra = C.idobra and
-          O.idobra = '2' and
-          HF.fecha < TO_DATE('31/03/2022 08:40:00','DD/MM/YYYY HH24:MI:SS')  and
-          HF2.fecha > TO_DATE('31/03/2022 08:40:00','DD/MM/YYYY HH24:MI:SS') ;
+          O.idobra = T.idobra and
+          HF.fecha < TO_DATE('31/03/2022 09:40:00','DD/MM/YYYY HH24:MI:SS')  and
+          HF2.fecha > TO_DATE('31/03/2022 09:40:00','DD/MM/YYYY HH24:MI:SS') ;
 
 -- PARA INICIO
 SELECT O.titulo, C.*

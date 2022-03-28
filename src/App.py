@@ -100,14 +100,17 @@ def asistencia():
 
 def fecha():
     ahora = datetime.datetime.now()
-    ahora = ahora.strftime('%d/%m/%Y')
+    ahora = ahora.strftime('%d/%m/%Y %H:%M:%S')
     arreglo=[]
 
     #Fecha real para HOY
     #arreglo.append((ahora,"hoy"))
     
     #Fecha de pruebas 
-    arreglo.append(('31/03/2022', 'prueba'))
+    arreglo.append(('31/03/2022 08:30:00', 'prueba'))
+
+    print("ACTUAL: ",ahora)
+    print("PRUEBA: ", arreglo[0][0])
     return arreglo
 
 @app.route('/asist/<string:id>')
@@ -121,9 +124,10 @@ def asistencia_estudiante(id):
     data = cursor.fetchall()
     print("registros: ", len(data))
     idasistencia = len(data) + 1
-
-    #Obtener el idcalendario con la fecha actual en una consulta anidada con la tabla horafecha 
+    
     fecha_actual = fecha()[0][0]
+    #Obtener el idcalendario con la fecha actual en una consulta anidada con la tabla horafecha 
+    '''
     print("fecha actualllll: ",fecha_actual)
     cursor.execute("""SELECT C.idcalendario 
                       FROM calendario C, horafecha HF, horafecha HF2
@@ -132,12 +136,22 @@ def asistencia_estudiante(id):
                       HF.idhorafecha in (SELECT idhorafecha 
                                          FROM horafecha 
                                          WHERE TO_CHAR(fecha, 'DD/MM/YYYY') like :fecha_actual)""",{'fecha_actual':fecha_actual})
+    '''
+
+    cursor.execute("""SELECT C.idcalendario
+                      FROM calendario C, horafecha HF, horafecha HF2, obra O, (SELECT idobra FROM obra WHERE estado = 1) T
+                      WHERE HF.idhorafecha = C.idhorainicio and
+                            HF2.idhorafecha = C.idhorafin and
+                            O.idobra = C.idobra and
+                            O.idobra = T.idobra and
+                            HF.fecha < TO_DATE(:fecha_actual,'DD/MM/YYYY HH24:MI:SS')  and
+                            HF2.fecha > TO_DATE(:fecha_actual,'DD/MM/YYYY HH24:MI:SS')""", {'fecha_actual':fecha_actual})   
         #cursor.execute('DELETE FROM usuario WHERE id = {0}.format(id))
     data2 = cursor.fetchall()
     print("idcalendario: ", data2)
+    if(len(data2) == 0 ):
+        data2 = 'hora invalida'
     idcalendario = data2[0][0]
-    print("inicio",data2[0][0])
-    print("fin",data2[0][1])
     #Obtener el idObra con el idestudiante
     print(idestudiante)
     cursor.execute("""SELECT PE.idobra
@@ -180,7 +194,7 @@ def asistencia_estudiante(id):
                 connection.commit() 
                 flash('Asistencia guardada para el estudiante de codigo '+idestudiante)
     except cx_Oracle.Error as error:
-        flash('ERROR')
+        flash('ERROR hora o fecha invalida para registro')
         print(error)
     return redirect(url_for('asistencia'))
 
@@ -354,5 +368,7 @@ def enviar_correo(nombre, codigo, correo, horas, minutos):
     msg = 'Subject: {}\n\n{}'.format("Obra de teatro", mensaje)  
     server.sendmail('correo.base.de.datos.uno@gmail.com', correo, msg) 
     server.quit()
+
+
 if __name__=='__main__':
     app.run(port = 3000, debug = True)
