@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pdf</title>
+    <meta name="description" content="pdf page">
+
+	
+    
+	<link rel="stylesheet" href="../static/css/style.css">
+</head>
+
+<body>
+	<header>
+		<div><img src="../static/img/escudo_ud.png"><strong>Universidad Distrital Francisco Jose de Caldas</strong> </div>
+	</header>
+	<section class="container-fluid">
+		<strong>Dirigido a: Facultad de Artes</strong>
+		{% for obra in obras %}
+				<div><strong><a href="/"></a>Liquidacion Viaticos a estudiantes de la obra: {{ obra.0 }}</strong></div>
+        {% endfor %}
+		
+		<div><strong>Fecha inicio: </strong></div>
+		<div><strong>Fecha fin: </strong></div>
+	</section>
+	<section id="pageContent">
+		<main role="main">
+			<article>
+				<h4>Listado Estudiantes: </h4>
+				<br>
+				<p>TABLA.</p>
+			</article>
+		</main>
+	</section>
+	
+	<footer>
+		<hr>
+		<div> Firma Docente: ________</div>
+		<div> Nombre Docente: ________</div>
+		<div> Cedula Docente: ________</div>
+		<div> Facultad Docente: ________</div>
+
+	</footer>
+
+
+</body>
+
+</html>

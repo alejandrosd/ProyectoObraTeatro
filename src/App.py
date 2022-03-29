@@ -5,11 +5,16 @@ import config
 from flask import Flask, render_template, request, redirect, url_for, flash
 import datetime
 
+#librerias para pdf
+from distutils.log import info
+import jinja2
+import pdfkit
+
 import smtplib
 
 
 app = Flask(__name__)
-
+#, static_folder='/src/templates/pdf/static'
 
 
 #conexion con oracle
@@ -45,29 +50,112 @@ app.secret_key = 'mysecretkey'
 
 @app.route('/')
 def index():
-    cursor = connection.cursor()
-    cursor.execute("SELECT * FROM estudiante")
-    data = cursor.fetchall()
-    
-    cursor.execute("SELECT * FROM carrera")
-    data2 = cursor.fetchall()
 
-    cursor.execute("SELECT * FROM documento")
-    data3 = cursor.fetchall()
+    return redirect(url_for('inicio'))
 
-    print("tamanio ", size(data))
-    return render_template('index.html', estudiantes = data, carreras = data2, tiposdocumentos = data3)
+
+@app.route('/login', methods=['GET','POST'])
+def login():
+            
+    if request.method == 'POST':
+        cedula = request.form['cedula']
+        nombre = request.form['nombre']
+                       
+        try:          
+            cursor= connection.cursor()
+            cursor.execute("""SELECT * FROM empleado where cedula = :cedula and nombre = :nombre""",cedula = cedula ,nombre = nombre ) 
+            data = cursor.fetchall()
+            
+            if data:
+                print(data[0][0])
+                global id_empleado
+                id_empleado = data[0][0]
+                return redirect(url_for('inicio'))               
+            else:
+                flash('CREDENCIALES INVALIDAS')  
+                return redirect(url_for('login'))          
+        except cx_Oracle.Error as error:
+            flash('ERROR EN EL SISTEMA')
+            print(error)
+        
+    return render_template('login.html')
 
 
 @app.route('/inicio')
 def inicio():
+    global id_empleado # means: in this scope, use the global name
+    print(id_empleado)
     cursor = connection.cursor()
-    cursor.execute("SELECT titulo FROM obra WHERE estado like 1")
-    #cursor.execute("SELECT * FROM obra")
+
+    # Datos para layout.html
+
+    cursor.execute("""SELECT * FROM empleado where idEmpleado = :id_empleado """,id_empleado = id_empleado)           
+    
     data = cursor.fetchall()
-    print("OBRA: ", data)
+    print("DOCENTE ",data)
     data2 = fecha()
-    return render_template('layout.html', obras = data, fechas = data2)
+
+    #Descarga todas las obras e indica en cual participo el docente
+    cursor.execute("""SELECT idObra, TRIM(O.titulo), NVL2(PART.empleado,'Participó', 'No participó') , O.estado
+                      FROM obra O, (SELECT O.titulo titulo, O.estado estado, LPO.idempleado empleado
+                                  FROM obra O, calendario C, LaborPersonalObra LPO
+                                  WHERE O.idobra = C.idobra and
+                                          C.idcalendario = LPO.idcalendario and
+                                          C.idobra = LPO.idobra and
+                                          LPO.idempleado like 1) PART
+                    WHERE O.titulo = PART.titulo(+)""")
+
+    data3 = cursor.fetchall()
+
+    #Recorrera todas las obras buscando que botones habilitar
+    data4=[]
+    for x in data3:
+        print ("OBRA ",x)
+        if x[2] == "Participó":
+            #Verificar si se puede agregar asistencia           
+            cursor.execute("""SELECT O.titulo, C.* 
+                FROM calendario C, horafecha HF, horafecha HF2, obra O
+                WHERE HF.idhorafecha = C.idhorainicio and
+                    HF2.idhorafecha = C.idhorafin and
+                    O.idobra = C.idobra and
+                    O.idobra = :id_obra and
+                    HF.fecha < TO_DATE(:fecha_actual,'DD/MM/YYYY HH24:MI:SS')  and
+                    HF2.fecha > TO_DATE(:fecha_actual,'DD/MM/YYYY HH24:MI:SS')""",id_obra = int(x[0]) , fecha_actual = data2[0][0] ) 
+            aux = cursor.fetchall()
+            
+            if aux:  
+                print("ASISTENCIA",aux)
+                aux_2 = ["si","no","no"] 
+                 
+            else:
+                aux_2 = "No hay horario para asistencia"
+                #verifica si se puede emitir viaticos (Descarga el ultimo calendario de si la obra esta activa)
+                cursor.execute("""SELECT O.titulo, TO_CHAR(HF.FECHA,'DD/MM/YYYY HH24:MI:SS')  as fechaInicio, TO_CHAR(HF2.FECHA,'DD/MM/YYYY HH24:MI:SS')  
+                    FROM calendario C, horafecha HF, horafecha HF2, obra O
+                    WHERE HF.idhorafecha = C.idhorainicio and
+                    HF2.idhorafecha = C.idhorafin and
+                    O.idobra = C.idobra and
+                    O.idobra = :id_obra and
+                    O.estado = 1 and
+                    HF2.fecha > TO_DATE(:fecha_actual,'DD/MM/YYYY HH24:MI:SS')
+                    order by C.idhorafin desc""",id_obra = int(x[0]), fecha_actual = data2[0][0]) 
+                
+                aux = cursor.fetchall()
+                print ("VIATICOS  ",aux)
+                if not aux and x[3] == 1:  
+                    print ("VIATICOS  ",aux)
+                    aux_2 = ["no","si","no"]  
+                else:
+                    #Verifica si se pueden sacar certificados
+                    if x[3] == 0:  
+                        aux_2 = ["no","no","si"] 
+                     
+        else:
+            aux_2 = ""
+
+        data4.append(aux_2)
+    print(data4)
+    return render_template('inicio.html', Docente = data, fechas = data2,  estudiantes = data3 , botones = data4 )
 
 @app.route('/asistencia')
 def asistencia():
@@ -107,7 +195,7 @@ def fecha():
     #arreglo.append((ahora,"hoy"))
     
     #Fecha de pruebas 
-    arreglo.append(('31/03/2022 08:30:00', 'prueba'))
+    arreglo.append(('30/04/2022 09:30:00', 'prueba'))
 
     print("ACTUAL: ",ahora)
     print("PRUEBA: ", arreglo[0][0])
@@ -219,7 +307,7 @@ def viaticos():
                                            FROM obra
                                            WHERE estado like 1)""")
     data3 = cursor.fetchall()
-    print("ESTUDIANTES: VIATICOS ",len(data3))
+    print("ESTUDIANTES VIATICOS ",len(data3))
     #print(data3)
     return render_template('viaticos.html', obras = data, fechas = data2,  estudiantes = data3 )
 
@@ -270,6 +358,54 @@ def certificados_estudiantes(id):
     data = cursor.fetchall()
 
     return redirect(url_for('certificados'))
+
+
+@app.route('/viaticos_pdf')
+def viaticos_pdf():
+    cursor = connection.cursor()
+    # Datos para encabezado pdf
+    cursor.execute("SELECT titulo FROM obra WHERE estado like 1")
+    data = cursor.fetchall()
+
+    # Datos para tabla estudiantes en el pdf
+    cursor.execute("""SELECT E.nombre||' '||E.apellido nombre, E.correo, E.idestudiante
+                      FROM estudiante E, personaje P, PersonajeEstudiante PE, obra O
+                      WHERE E.idestudiante = PE.idestudiante and
+                            P.idpersonaje = PE.idpersonaje and
+                            O.idobra =  P.idobra and
+                            (PE.idobra) = (SELECT idobra 
+                                           FROM obra
+                                           WHERE estado like 1)
+                      ORDER BY E.idestudiante""")
+    data2 = cursor.fetchall()
+
+    print("DATOS PARA PDF",data2)
+
+    ruta_template = 'C:/Users/luiso/OneDrive/Desktop/Proyecto_fina_bases/Modulo_bases_datos/ProyectoObraTeatro/src/templates/pdf/pdf.html'
+    info = {}
+    rutacss = 'C:/Users/luiso/OneDrive/Desktop/Proyecto_fina_bases/Modulo_bases_datos/ProyectoObraTeatro/src/templates/pdf/css/style.css'
+    crea_pdf(ruta_template, info, data, rutacss)
+
+    return redirect(url_for('viaticos'))
+
+
+def crea_pdf(ruta_template, info, data, rutacss=''):
+    nombre_template = ruta_template.split('/')[-1]
+    ruta_template = ruta_template.replace(nombre_template,'')
+   
+    env = jinja2.Environment(loader = jinja2.FileSystemLoader(ruta_template))
+    template = env.get_template(nombre_template)
+    html = template.render(obras = data)
+   
+    path_wkhtmltopdf = r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe'
+    config = pdfkit.configuration(wkhtmltopdf=path_wkhtmltopdf)
+    #ruta_salida = 'C:/Users/luiso/OneDrive/Desktop/Proyecto_fina_bases/Modulo_bases_datos/ProyectoObraTeatro/src/LIQUIDACION.pdf'
+    pdfkit.from_string(html, 'liquidacion.pdf', css=rutacss, configuration = config)
+ 
+    
+
+    #pdf = pdfkit.from_file('templates\pdf\pdf.html', 'micro.pdf', configuration=config)
+    #print(type(pdf))
 
 
 @app.route('/add_contact', methods=['POST'])
