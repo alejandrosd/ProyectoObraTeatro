@@ -4,6 +4,7 @@ from numpy import full, size
 import config
 from flask import Flask, render_template, request, redirect, url_for, flash
 import datetime
+from pdf_mail import sendpdf
 
 #librerias para pdf
 from distutils.log import info
@@ -569,7 +570,8 @@ def certi(idobra , idEstudiante):
         if data3:
             datos_sesiones = list(data3[i])
             datos_horas = list(data4[i])
-            datos_periodo = list(data5[i])
+            #datos_periodo = list(data5[i])
+            datos_periodo = list((0,'2022-1'))
         else:
             datos_sesiones = ["0","0"]
             datos_horas = ["0","0"]
@@ -607,12 +609,15 @@ def certi(idobra , idEstudiante):
                             E.idempleado = :cedula""", {'cedula':id_empleado})
     data_footer = cursor.fetchall()
 
+    cursor.execute("""SELECT correo FROM estudiante WHERE idestudiante = :idEstudiante""",idEstudiante = idEstudiante)
+    data_mail = cursor.fetchall()
+
     #data_table = data2[0]+data3[0][1]+data4[0][1]+data5[0][1]
     print("DATOS DE LA TABLA PDF: ", data_footer)
     ruta_template = 'C:/Users/luiso/OneDrive/Desktop/Proyecto_fina_bases/Modulo_bases_datos/ProyectoObraTeatro/src/templates/pdf/pdf_certi.html'
     info = {}
     rutacss = 'C:/Users/luiso/OneDrive/Desktop/Proyecto_fina_bases/Modulo_bases_datos/ProyectoObraTeatro/src/templates/pdf/css/style.css'
-    crea_pdf(ruta_template, info, data_header, data_table, data_footer, 'certificado.pdf', rutacss)
+    crea_pdf(ruta_template, info, data_header, data_table, data_footer, 'certificado.pdf', data_mail, rutacss)
 
     return redirect(url_for('inicio'))
 
@@ -683,11 +688,11 @@ def viaticos_pdf():
         datos_estudiantes = list(data2[i])
         datos_sesiones = list(data3[i])
         datos_horas = list(data4[i])
-        #datos_periodo = list(data5[i])
+        datos_periodo = list((0,'2022-1'))
 
         datos_estudiantes.append(datos_sesiones[1])
         datos_estudiantes.append(datos_horas[1])
-        datos_estudiantes.append('1')
+        datos_estudiantes.append(datos_periodo[1])
 
         data_table.append(tuple(datos_estudiantes))
 
@@ -717,7 +722,7 @@ def viaticos_pdf():
     ruta_template = 'C:/Users/luiso/OneDrive/Desktop/Proyecto_fina_bases/Modulo_bases_datos/ProyectoObraTeatro/src/templates/pdf/pdf.html'
     info = {}
     rutacss = 'C:/Users/luiso/OneDrive/Desktop/Proyecto_fina_bases/Modulo_bases_datos/ProyectoObraTeatro/src/templates/pdf/css/style.css'
-    crea_pdf(ruta_template, info, data_header, data_table, data_footer, 'liquidacion.pdf', rutacss)
+    crea_pdf(ruta_template, info, data_header, data_table, data_footer, 'liquidacion.pdf','0', rutacss)
 
     
     cursor.execute("""UPDATE obra set estado='0' where idobra = '2'""")
@@ -729,7 +734,7 @@ def viaticos_pdf():
 
 
 
-def crea_pdf(ruta_template, info, data_header, data_table, data_footer, file_name, rutacss=''):
+def crea_pdf(ruta_template, info, data_header, data_table, data_footer, file_name, data_mail, rutacss=''):
     nombre_template = ruta_template.split('/')[-1]
     ruta_template = ruta_template.replace(nombre_template,'')
    
@@ -742,7 +747,21 @@ def crea_pdf(ruta_template, info, data_header, data_table, data_footer, file_nam
     #ruta_salida = 'C:/Users/luiso/OneDrive/Desktop/Proyecto_fina_bases/Modulo_bases_datos/ProyectoObraTeatro/src/LIQUIDACION.pdf'
     pdfkit.from_string(html, file_name, css=rutacss, configuration = config)
     
+    if data_mail != '0':
+
+        k = sendpdf("correo.base.de.datos.uno@gmail.com",
+                    str(data_mail[0][0]),
+                    "basededatosunoprueba123",
+                    "Certificado Obra de Teatro",
+                    "Buenas, se le certifica la participacion en la obra de teatro con el siguiente documento",
+                    "certificado",
+                    "C:/Users/luiso/OneDrive/Desktop/Proyecto_fina_bases/Modulo_bases_datos/ProyectoObraTeatro/src/",
+                    )
+
+        k.email_send()
+        data_mail='0'
     
+
     #sin estilos
     #pdfkit.from_string(html, 'liquidacionn.pdf', configuration = config)
 
