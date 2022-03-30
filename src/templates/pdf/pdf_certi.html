@@ -14,20 +14,21 @@
 	<header>
 		<div id="logo"><strong>Universidad Distrital Francisco Jose de Caldas</strong> </div>
 	</header>
-	<section>
-		<strong>Dirigido a: Facultad de Artes</strong>
+	<section>{% for estudiante in estudiantes %}
+		<strong>Dirigido a: {{ estudiante.0 +  estudiante.1  }}</strong>
+			 {% endfor %}
+			 
 		{% for obra in obras %}
-				<div><strong><a href="/"></a>Liquidacion Viaticos a estudiantes de la obra: {{ obra.0 }}</strong></div>
-
-				
+				<div><strong><a href="/"></a>Certificado de participacion de la obra: {{ obra.0 }}</strong></div>				
 		<div><strong>Fecha inicio: {{ obra.1 }}</strong></div>
 		<div><strong>Fecha fin: {{ obra.2 }}</strong></div>
+		<div><strong>Director: {{ obra.3 }}</strong></div>
 		{% endfor %}
 	</section>
 	<section id="pageContent">
 		<main role="main">
 			<article>
-				<h4>Listado Estudiantes: </h4>
+				<h4>Datos Estudiante: </h4>
 				<br>
 				<table class="table table-striped table-bordered bg-white table-sm">
 					<thead>
@@ -36,6 +37,7 @@
 							<td>Apellido</td>
 							<td>Correo</td>
 							<td>Codigo</td>
+							<td>Personaje</td>
 							<td>Num. Sesiones</td>
 							<td>Total Horas Participacion</td>
 							<td>Periodo de Participacion</td>
@@ -49,8 +51,9 @@
 							<td>{{ estudiante.2 }} </td>
 							<td>{{ estudiante.3 }} </td>
 							<td>{{ estudiante.4 }} </td>
-							<td>{{ estudiante.5 }} horas </td>
-							<td>{{ estudiante.6 }} </td>
+							<td>{{ estudiante.5 }} </td>
+							<td>{{ estudiante.6 }} horas </td>
+							<td>{{ estudiante.7 }} </td>
 						</tr>
 						{% endfor %}
 			
