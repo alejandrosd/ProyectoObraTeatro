@@ -1,24 +1,3 @@
-
-
--- Dramaturgos: 
-
-INSERT INTO Dramaturgo VALUES (
- 	   '1', 'William Shakespeare', '2'
-);
-INSERT INTO Dramaturgo VALUES (
-    '2', 'Cristina Armada ', '4'
-);
-
-INSERT INTO Dramaturgo VALUES (
-    '3', 'Joel Schumacher', '2'
-);
-INSERT INTO Dramaturgo VALUES (
-    '4', 'Fernando de Rojas', '5'
-);
-INSERT INTO Dramaturgo VALUES (
-    '5', 'José Zorrilla', '5'
-);
-	
 -- Paises 
 	
 INSERT INTO Pais VALUES (
@@ -40,6 +19,27 @@ INSERT INTO Pais VALUES (
 INSERT INTO Pais VALUES (
     '5', 'España' 
 );
+
+-- Dramaturgos: 
+
+INSERT INTO Dramaturgo VALUES (
+ 	   '1', 'William Shakespeare', '2'
+);
+INSERT INTO Dramaturgo VALUES (
+    '2', 'Cristina Armada ', '4'
+);
+
+INSERT INTO Dramaturgo VALUES (
+    '3', 'Joel Schumacher', '2'
+);
+INSERT INTO Dramaturgo VALUES (
+    '4', 'Fernando de Rojas', '5'
+);
+INSERT INTO Dramaturgo VALUES (
+    '5', 'José Zorrilla', '5'
+);
+	
+
 -- Genero 
 INSERT INTO TipoObra VALUES(
     '1', 'Tragedia/Drama'
@@ -376,20 +376,17 @@ INSERT INTO TipoUnidad VALUES(
 );
 
 INSERT INTO Unidad VALUES (
-    '1', '1', '6', 'Artes Escenicas'
+    '10', '2', '', 'Rectoria'
 );
 INSERT INTO Unidad VALUES (
-    '2', '1', '7', 'Musica'
+    '11', '2', '10', 'Vicerrectoria'
 );
-INSERT INTO Unidad VALUES (
-    '3', '1', '8', 'Ingenieria Catastral'
-);
-INSERT INTO Unidad VALUES (
-    '4', '1', '9', 'Ingenieria Electrica'
-);
+
+
 INSERT INTO Unidad VALUES (
     '5', '1', '11', 'Facultad de Artes'
 );
+
 INSERT INTO Unidad VALUES (
     '6', '1', '5', 'Proyecto de Artes Escenicas'
 );
@@ -402,58 +399,64 @@ INSERT INTO Unidad VALUES (
 INSERT INTO Unidad VALUES (
     '9', '1', '5', 'Proyecto de Electrica'
 );
+
+
 INSERT INTO Unidad VALUES (
-    '10', '2', ' ', 'Rectoria'
+    '1', '1', '6', 'Artes Escenicas'
 );
 INSERT INTO Unidad VALUES (
-    '11', '2', '10', 'Vicerrectoria'
+    '2', '1', '7', 'Musica'
+);
+INSERT INTO Unidad VALUES (
+    '3', '1', '8', 'Ingenieria Catastral'
 );
 
-
-
+INSERT INTO Unidad VALUES (
+    '4', '1', '9', 'Ingenieria Electrica'
+);
 --1.9. Incluir 10 estudiantes de los cuales, 4 fueron asignados a los personajes de la 
 --obra activa y 6 a otras obras 
 
 --Estudiantes
 
 INSERT INTO Estudiante VALUES (
-    '2017202012', '1', TO_DATE('01/07/2017', 'DD-MM-YY'),TO_DATE('11/02/1997', 'DD-MM-YY') ,'psalcedo@gmail.com' ,'Pedro', 'Salcedo'
+    '2017202012', '1', TO_DATE('01/07/2017', 'DD-MM-YY'),TO_DATE('11/02/1997', 'DD-MM-YY') ,'psalcedo@yopmail.com' ,'Pedro', 'Salcedo'
 );
 
 INSERT INTO Estudiante VALUES (
-    '2017202024', '1', TO_DATE('01/07/2017', 'DD-MM-YY'),TO_DATE('16/10/1999', 'DD-MM-YY'), 'jrodriguez@gmail.com' ,'Jose', 'Rodriguez'
+    '2017202024', '1', TO_DATE('01/07/2017', 'DD-MM-YY'),TO_DATE('16/10/1999', 'DD-MM-YY'), 'jrodriguez@yopmail.com' ,'Jose', 'Rodriguez'
 );
 
 INSERT INTO Estudiante VALUES (
-    '2017102021', '1', TO_DATE('01/02/2017', 'DD-MM-YY'),TO_DATE('20/01/1999', 'DD-MM-YY'), 'ccaicedo@gmail.com' ,'Cristian', 'Caicedo'
+    '2017102021', '1', TO_DATE('01/02/2017', 'DD-MM-YY'),TO_DATE('20/01/1999', 'DD-MM-YY'), 'ccaicedo@yopmail.com' ,'Cristian', 'Caicedo'
 );
 
 INSERT INTO Estudiante VALUES (
-    '2019102072', '1', TO_DATE('01/02/2019', 'DD-MM-YY'),TO_DATE('11/09/2001', 'DD-MM-YY'), 'agomez@gmail.com' ,'Andrea', 'Gomez'
+    '2019102072', '1', TO_DATE('01/02/2019', 'DD-MM-YY'),TO_DATE('11/09/2001', 'DD-MM-YY'), 'agomez@yopmail.com' ,'Andrea', 'Gomez'
 );
 
 INSERT INTO Estudiante VALUES (
-    '2019202044', '1', TO_DATE('01/07/2019', 'DD-MM-YY'),TO_DATE('01/07/1997', 'DD-MM-YY'), 'cgonzalez@gmail.com' ,'Cristina', 'Gonzalez'
+    '2019202044', '1', TO_DATE('01/07/2019', 'DD-MM-YY'),TO_DATE('01/07/1997', 'DD-MM-YY'), 'cgonzalez@yopmail.com' ,'Cristina', 'Gonzalez'
 );
 
 INSERT INTO Estudiante VALUES (
-    '2020202062', '1', TO_DATE('01/07/2020', 'DD-MM-YY'),TO_DATE('30/03/2002', 'DD-MM-YY'), 'efernandez@gmail.com' ,'Esteban', 'Fernandez'
+    '2020202062', '1', TO_DATE('01/07/2020', 'DD-MM-YY'),TO_DATE('30/03/2002', 'DD-MM-YY'), 'efernandez@yopmail.com' ,'Esteban', 'Fernandez'
 );
 
 INSERT INTO Estudiante VALUES (
-    '2016102051', '1', TO_DATE('01/02/2016', 'DD-MM-YY'),TO_DATE('25/01/1992', 'DD-MM-YY'), 'equintero@gmail.com' ,'Radamel', 'Quintero'
+    '2016102051', '1', TO_DATE('01/02/2016', 'DD-MM-YY'),TO_DATE('25/01/1992', 'DD-MM-YY'), 'equintero@yopmail.com' ,'Radamel', 'Quintero'
 );
 
 INSERT INTO Estudiante VALUES (
-    '2015202002', '1', TO_DATE('01/07/2015', 'DD-MM-YY'),TO_DATE('06/12/1995', 'DD-MM-YY'), 'sgaviria@gmail.com' ,'Sofia', 'Gaviria'
+    '2015202002', '1', TO_DATE('01/07/2015', 'DD-MM-YY'),TO_DATE('06/12/1995', 'DD-MM-YY'), 'sgaviria@yopmail.com' ,'Sofia', 'Gaviria'
 );
 
 INSERT INTO Estudiante VALUES (
-    '2019102017', '1', TO_DATE('01/02/2019', 'DD-MM-YY'),TO_DATE('29/05/2000', 'DD-MM-YY'), 'eduarte@gmail.com' ,'Elena', 'Duarte'
+    '2019102017', '1', TO_DATE('01/02/2019', 'DD-MM-YY'),TO_DATE('29/05/2000', 'DD-MM-YY'), 'eduarte@yopmail.com' ,'Elena', 'Duarte'
 );
 
 INSERT INTO Estudiante VALUES (
-    '2011202112', '2', TO_DATE('01/07/2011', 'DD-MM-YY'),TO_DATE('15/10/1990', 'DD-MM-YY'), 'jperez@gmail.com' ,'Juan', 'Perez'
+    '2011202112', '2', TO_DATE('01/07/2011', 'DD-MM-YY'),TO_DATE('15/10/1990', 'DD-MM-YY'), 'jperez@yopmail.com' ,'Juan', 'Perez'
 );
 
 
@@ -462,19 +465,23 @@ INSERT INTO Estudiante VALUES (
 
 INSERT INTO PersonajeEstudiante VALUES (
     '1', '5', '2', '2011202112', TO_DATE('31/03/2022 08:00', 'DD-MM-YY HH24:MI'), TO_DATE('24/04/2022 16:00', 'DD-MM-YY HH24:MI')
-); -- Perez
+); 
+-- Perez
 
 INSERT INTO PersonajeEstudiante VALUES (
     '2', '6', '2', '2016102051', TO_DATE('04/04/2022 08:00', 'DD-MM-YY HH24:MI'), TO_DATE('24/04/2022 16:00', 'DD-MM-YY HH24:MI')
-); -- Quintero
+); 
+-- Quintero
 
 INSERT INTO PersonajeEstudiante VALUES (
     '3', '7', '2', '2019102017', TO_DATE('31/03/2022 08:00', 'DD-MM-YY HH24:MI'), TO_DATE('24/04/2022 16:00', 'DD-MM-YY HH24:MI')
-); -- Duarte
+); 
+-- Duarte
 
 INSERT INTO PersonajeEstudiante VALUES (
     '4', '8', '2', '2020202062', TO_DATE('08/04/2022 08:00', 'DD-MM-YY HH24:MI'), TO_DATE('22/04/2022 16:00', 'DD-MM-YY HH24:MI')
-); -- Fernandez
+); 
+-- Fernandez
 
 --obras inactivas
 
@@ -509,53 +516,53 @@ INSERT INTO PersonajeEstudiante VALUES (
 --empleado en Obra Activa (La Divina Comedia)
 
 INSERT INTO empleado VALUES (
-    '1', '5', 'Yimmy', 'Gonzalez', '98752059', '3134556922', 'ygonzalez@gmail.com'
+    '1', '5', 'Yimmy', 'Gonzalez', '98752059', '3134556922', 'ygonzalez@yopmail.com'
 );
 
 INSERT INTO empleado VALUES (
-    '2', '5', 'Juan', 'Polo', '99752059', '3134556922', 'jpolo@gmail.com'
+    '2', '5', 'Juan', 'Polo', '99752059', '3134556922', 'jpolo@yopmail.com'
 );
 
 INSERT INTO empleado VALUES (
-    '3', '5', 'Alfredo', 'Gonzalez', '91752839', '3134556922', 'agonzalez@gmail.com'
+    '3', '5', 'Alfredo', 'Gonzalez', '91752839', '3134556922', 'agonzalez@yopmail.com'
 );
 
 INSERT INTO empleado VALUES (
-    '4', '5', 'Laura', 'Garcia', '95652059', '3134556922', 'lgarcia@gmail.com'
+    '4', '5', 'Laura', 'Garcia', '95652059', '3134556922', 'lgarcia@yopmail.com'
 );
 
 INSERT INTO empleado VALUES (
-    '5', '5', 'Cristo', 'Fernandez', '91752059', '3134556922', 'cfernandez@gmail.com'
+    '5', '5', 'Cristo', 'Fernandez', '91752059', '3134556922', 'cfernandez@yopmail.com'
 );
 
 
 
 INSERT INTO empleado VALUES (
-    '6', '5', 'Carmen', 'Manrique', '98752059', '3134556922', 'cmanrique@gmail.com'
+    '6', '5', 'Carmen', 'Manrique', '88888888', '3134556922', 'cmanrique@yopmail.com'
 );
 
 INSERT INTO empleado VALUES (
-    '7', '5', 'Oswaldo', 'Rodriquez', '98752059', '3134556922', 'orodriquez@gmail.com'
+    '7', '5', 'Oswaldo', 'Rodriquez', '88888888', '3134556922', 'orodriquez@yopmail.com'
 );
 
 INSERT INTO empleado VALUES (
-    '8', '5', 'Patricia', 'Gonzalez', '98752059', '3134556922', 'pgonzalez@gmail.com'
+    '8', '5', 'Patricia', 'Gonzalez', '88888888', '3134556922', 'pgonzalez@yopmail.com'
 );
 
 INSERT INTO empleado VALUES (
-    '9', '5', 'Ferney', 'Candela', '98752059', '3134556922', 'fcandela@gmail.com'
+    '9', '5', 'Ferney', 'Candela', '88888888', '3134556922', 'fcandela@yopmail.com'
 );
 
 INSERT INTO empleado VALUES (
-    '10', '5', 'Karen', 'Lizarazo', '98752059', '3134556922', 'klizarazo@gmail.com'
+    '10', '5', 'Karen', 'Lizarazo', '88888888', '3134556922', 'klizarazo@yopmail.com'
 );
 
 INSERT INTO empleado VALUES (
-    '11', '5', 'Junifero', 'Primero', '98752059', '3134556922', 'jprimero@gmail.com'
+    '11', '5', 'Junifero', 'Primero', '88888888', '3134556922', 'jprimero@yopmail.com'
 );
 
 INSERT INTO empleado VALUES (
-    '12', '5', 'Esteban', 'Galindo', '98752059', '3134556922', 'egalindo@gmail.com'
+    '12', '5', 'Esteban', 'Galindo', '88888888', '3134556922', 'egalindo@yopmail.com'
 );
 
 
